@@ -1,0 +1,18 @@
+ Message Queue
+
+- name: Installing the packagae for message queue for Ubuntu
+  apt:
+    name: rabbitmq-server
+  when: ansible_distribution == "Ubuntu"
+
+- name: permit the openstack user to configure, write and read
+  shell: rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+  when: ansible_distribution == "Ubuntu"
+  
+- block:
+  - name: Verifying if already active and running the rabbitmq-server.
+    shell: systemctl status rabbitmq-server
+    register: message_service
+
+  - debug:
+      msg="{{ message_service }}"
